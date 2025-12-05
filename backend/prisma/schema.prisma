@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url= env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  logoUrl   String?
+  createdAt DateTime @default(now())
+
+  cards     Card[]
+  support   SupportContact?
+}
+
+model Card {
+  id           String    @id @default(uuid())
+  companyId    String
+  maskedNumber String
+  status       CardStatus
+  imageUrl     String?
+  creditLimit  Decimal
+  currency     String    @default("SEK")
+  createdAt    DateTime  @default(now())
+
+  company      Company   @relation(fields: [companyId], references: [id])
+  invoices     Invoice[]
+  transactions Transaction[]
+}
+
+model Invoice {
+  id         String        @id @default(uuid())
+  cardId     String
+  status     InvoiceStatus
+  dueDate    DateTime
+  amountDue  Decimal
+  currency   String        @default("SEK")
+  createdAt  DateTime      @default(now())
+
+  card       Card          @relation(fields: [cardId], references: [id])
+}
+
+model Transaction {
+  id                String   @id @default(uuid())
+  cardId            String
+  description       String
+  postedAt          DateTime @default(now())
+  amount            Decimal
+  currency          String   @default("SEK")
+  category          String?
+  dataPointsSummary String?
+  createdAt         DateTime @default(now())
+
+  card              Card     @relation(fields: [cardId], references: [id])
+}
+
+model SupportContact {
+  companyId String  @id
+  phone     String?
+  email     String?
+  chatUrl   String?
+
+  company   Company @relation(fields: [companyId], references: [id])
+}
+
+enum CardStatus {
+  inactive
+  active
+  blocked
+}
+
+enum InvoiceStatus {
+  due
+  overdue
+  paid
+}
+
