@@ -7,17 +7,36 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { DatabaseModule } from './database/database.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { SpendModule } from './spend/spend.module';
+import { CompaniesModule } from './companies/companies.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CacheModule } from '@nestjs/cache-manager';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
+    CacheModule.register(),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 60_000,
+        limit: 10,
+      },
+    ]),
     DashboardModule,
     CardsModule,
     TransactionsModule,
     DatabaseModule,
     InvoicesModule,
     SpendModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

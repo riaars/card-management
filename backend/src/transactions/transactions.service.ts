@@ -5,28 +5,84 @@ import type { Transaction } from '@prisma/client';
 export class TransactionsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async list(cardId: string, page: number, pageSize: number) {
+  async list(companyId: string, page: number, pageSize: number) {
     const skip = (page - 1) * pageSize;
 
-    const [items, totalCount] = await Promise.all([
+    const [transactions, totalCount] = await Promise.all([
       this.databaseService.transaction.findMany({
-        where: { cardId },
+        where: {
+          card: { companyId },
+        },
         orderBy: { postedAt: 'desc' },
         skip,
         take: pageSize,
       }),
-      this.databaseService.transaction.count({ where: { cardId } }),
+      this.databaseService.transaction.count({ where: { id: companyId } }),
     ]);
 
     return {
-      items: items.map((tx) => ({
+      transactions: transactions.map((tx) => ({
         ...tx,
         amount: tx.amount.toNumber(),
       })),
       page,
       pageSize,
       totalCount,
-      hasMore: skip + items.length < totalCount,
+      hasMore: skip + transactions.length < totalCount,
+    };
+  }
+
+  async findAllTransactionsByCard(
+    cardId: string,
+    page: number,
+    pageSize: number,
+    search?: string,
+  ) {
+    const skip = (page - 1) * pageSize;
+
+    const [transactions, totalCount] = await Promise.all([
+      this.databaseService.transaction.findMany({
+        where: {
+          cardId,
+          OR: search
+            ? [
+                { description: { contains: search, mode: 'insensitive' } },
+                { category: { contains: search, mode: 'insensitive' } },
+                {
+                  dataPointsSummary: { contains: search, mode: 'insensitive' },
+                },
+              ]
+            : undefined,
+        },
+        orderBy: { postedAt: 'desc' },
+        skip,
+        take: pageSize,
+      }),
+      this.databaseService.transaction.count({
+        where: {
+          cardId,
+          OR: search
+            ? [
+                { description: { contains: search, mode: 'insensitive' } },
+                { category: { contains: search, mode: 'insensitive' } },
+                {
+                  dataPointsSummary: { contains: search, mode: 'insensitive' },
+                },
+              ]
+            : undefined,
+        },
+      }),
+    ]);
+
+    return {
+      transactions: transactions.map((tx) => ({
+        ...tx,
+        amount: tx.amount.toNumber(),
+      })),
+      page,
+      pageSize,
+      totalCount,
+      hasMore: skip + transactions.length < totalCount,
     };
   }
 
@@ -44,6 +100,19 @@ export class TransactionsService {
       where: {
         card: { companyId },
       },
+      orderBy: { postedAt: 'desc' },
+      take: limit,
+    });
+
+    return transactions;
+  }
+
+  async latestTransactionsByCard(
+    cardId: string,
+    limit = 5,
+  ): Promise<Transaction[]> {
+    const transactions = await this.databaseService.transaction.findMany({
+      where: { cardId },
       orderBy: { postedAt: 'desc' },
       take: limit,
     });

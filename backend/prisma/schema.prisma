@@ -28,6 +28,9 @@ model Card {
   companyId    String
   maskedNumber String
   status       CardStatus
+  expiry        String  @default("12/26")
+  cardHolderName String @default("John Doe")
+  cardType     CardType 
   imageUrl     String?
   creditLimit  Decimal
   currency     String    @default("SEK")
@@ -81,7 +84,12 @@ enum CardStatus {
 
 enum InvoiceStatus {
   due
-  overdue
   paid
+}
+
+enum CardType {
+  visa
+  mastercard
+  amex
 }
 

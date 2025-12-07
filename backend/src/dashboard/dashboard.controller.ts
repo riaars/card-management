@@ -3,11 +3,11 @@ import { DashboardService } from './dashboard.service';
 import type { DashboardQueryDto } from './dashboard.zod';
 import { DashboardQueryPipe } from './dashboard-query.pipe';
 
-@Controller('api/v1')
+@Controller('dashboard')
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
-  @Get('dashboard')
+  @Get()
   async getDashboard(
     @Query(DashboardQueryPipe)
     query: DashboardQueryDto,
