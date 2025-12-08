@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { SpendSummaryItem } from './spends.types';
 import { Decimal } from '@prisma/client/runtime/library';
 

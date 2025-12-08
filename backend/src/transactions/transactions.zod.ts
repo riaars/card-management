@@ -5,6 +5,9 @@ export const TransactionsQuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional().default(1),
   pageSize: z.coerce.number().int().min(1).max(100).optional().default(20),
   search: z.string().optional(),
+});
+
+export const LatestTransactionsQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).optional().default(5),
 });
 
@@ -14,6 +17,10 @@ export const TransactionsParamSchema = z.object({
 
 export class TransactionsQueryDto extends createZodDto(
   TransactionsQuerySchema,
+) {}
+
+export class LatestTransactionsQueryDto extends createZodDto(
+  LatestTransactionsQuerySchema,
 ) {}
 export class TransactionsParamDto extends createZodDto(
   TransactionsParamSchema,

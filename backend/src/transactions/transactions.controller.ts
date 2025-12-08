@@ -1,6 +1,10 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
-import { TransactionsParamDto, TransactionsQueryDto } from './transactions.zod';
+import {
+  LatestTransactionsQueryDto,
+  TransactionsParamDto,
+  TransactionsQueryDto,
+} from './transactions.zod';
 import {
   TransactionsParamPipe,
   TransactionsQueryPipe,
@@ -34,7 +38,7 @@ export class TransactionsController {
   async latestByCard(
     @Param(TransactionsParamPipe) param: TransactionsParamDto,
     @Query(TransactionsQueryPipe)
-    query: TransactionsQueryDto,
+    query: LatestTransactionsQueryDto,
   ) {
     const { cardId } = param;
     const { limit } = query;

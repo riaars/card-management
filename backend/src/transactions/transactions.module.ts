@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { TransactionsController } from './transactions.controller';
 import {
+  LatestTransactionsQueryPipe,
   TransactionsParamPipe,
   TransactionsQueryPipe,
 } from './transactions.pipe';
@@ -11,6 +12,7 @@ import {
   providers: [
     TransactionsService,
     TransactionsQueryPipe,
+    LatestTransactionsQueryPipe,
     TransactionsParamPipe,
   ],
 })

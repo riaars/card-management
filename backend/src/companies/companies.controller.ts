@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
-import { CardsService } from 'src/cards/cards.service';
+import { CardsService } from '../cards/cards.service';
 import type { CompaniesParamDto } from './companies.zod';
 import { CompaniesParamPipe } from './companies.pipe';
 import { ApiParam } from '@nestjs/swagger';
