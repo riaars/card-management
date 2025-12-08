@@ -4,38 +4,54 @@ import {
   useGetCompaniesQuery,
   useGetSpendSummaryByCompanyQuery,
 } from "@/service/api/cardApi";
-import ContactSupportModal from "@/components/modals/ContactSupportModal";
 import SwipeCarousel from "@/layout/SwipeCarousel";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export const DashboardPage: React.FC = () => {
-  const [selectedCompany, setSelectedCompany] =
-    React.useState("company-seed-0001");
-
-  const [openContactSupport, setOpenContactSupport] = React.useState(false);
   const { data: companies, isLoading: companiesLoading } =
     useGetCompaniesQuery();
+  const [selectedCompany, setSelectedCompany] = React.useState<string | null>(
+    null
+  );
+
+  React.useEffect(() => {
+    if (!companies || companies.length === 0) return;
+    if (!selectedCompany) {
+      setSelectedCompany(companies[0].id);
+    }
+  }, [companies, selectedCompany]);
 
   const {
     data: cards = [],
     isLoading: cardsLoading,
     error: cardsError,
-  } = useGetCardsByCompanyQuery({ companyId: selectedCompany });
+  } = useGetCardsByCompanyQuery(
+    selectedCompany ? { companyId: selectedCompany } : skipToken
+  );
 
-  const {
-    data: spendSummary = [],
-    isLoading: spendLoading,
-    error: spendError,
-  } = useGetSpendSummaryByCompanyQuery({ companyId: selectedCompany });
+  // const {
+  //   data: spendSummary = [],
+  //   isLoading: spendLoading,
+  //   error: spendError,
+  // } = useGetSpendSummaryByCompanyQuery(
+  //   selectedCompany ? { companyId: selectedCompany } : skipToken
+  // );
 
-  const loading = companiesLoading || cardsLoading || spendLoading;
+  const loading = companiesLoading;
 
   if (loading) {
-    return <div className="p-6 text-slate-700">Loading dashboard...</div>;
+    return (
+      <div className="p-6 w-full lg:w-[450px] flex items-center justify-center mx-auto text-slate-700">
+        Loading dashboard...
+      </div>
+    );
   }
 
-  if (cardsError || spendError) {
+  if (cardsError) {
     return (
-      <div className="p-6 text-red-600">Failed to load dashboard data.</div>
+      <div className="p-6  w-full lg:w-[450px] flex items-center justify-center mx-auto text-red-600">
+        Failed to load dashboard data.
+      </div>
     );
   }
 
@@ -44,7 +60,7 @@ export const DashboardPage: React.FC = () => {
       <section>
         <div className="relative w-full lg:w-[450px] flex items-center justify-center mx-auto">
           <select
-            value={selectedCompany}
+            value={selectedCompany ?? ""}
             onChange={(e) => setSelectedCompany(e.target.value)}
             className="w-full  appearance-none
       px-4 py-2.5 pr-10
@@ -54,11 +70,11 @@ export const DashboardPage: React.FC = () => {
       border border-slate-200
       text-slate-700
       focus:outline-none
-      focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+      focus:ring-2 focus:ring-[#012d2f]-500 focus:border-[#012d2f]-500"
           >
             {companies?.map((company) => (
               <option
-                key={company.name}
+                key={company.id}
                 value={company.id}
                 className="w-full lg:w-[450px]"
               >
@@ -66,6 +82,7 @@ export const DashboardPage: React.FC = () => {
               </option>
             ))}
           </select>
+
           <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
             <svg
               className="w-4 h-4 text-slate-500"
@@ -83,23 +100,7 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       </section>
-      {/* Cards */}
-      <section>
-        <SwipeCarousel cards={cards} spends={spendSummary} />
-      </section>
-
-      <div className="w-full flex flex-col md:flex-row lg:flex-row justify-center gap-4">
-        <button
-          className="btn bg-[#012d2f] text-white p-4 rounded-xl full-width font-semibold lg:w-[400px]"
-          onClick={() => setOpenContactSupport(true)}
-        >
-          Contact Qred's Support
-        </button>
-      </div>
-      <ContactSupportModal
-        open={openContactSupport}
-        onClose={() => setOpenContactSupport(false)}
-      />
+      <section>{companies && cards && <SwipeCarousel cards={cards} />}</section>
     </div>
   );
 };

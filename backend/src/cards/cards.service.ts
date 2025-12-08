@@ -6,16 +6,24 @@ import type { Card } from '@prisma/client';
 export class CardsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async findByCompany(companyId: string): Promise<Card[]> {
-    const company = await this.databaseService.company.findUnique({
-      where: { id: companyId },
-      select: { id: true },
+  async findOne(id: string) {
+    const card = await this.databaseService.card.findUnique({
+      where: { id },
+      include: { company: true },
     });
 
-    if (!company) {
-      throw new NotFoundException('Company not found');
+    if (!card) {
+      throw new NotFoundException('Card not found');
     }
 
+    return {
+      id,
+      company: card.company.name,
+      maskedNumber: card.maskedNumber,
+    };
+  }
+
+  async findAllCardsByCompany(companyId: string): Promise<Card[]> {
     const cards = await this.databaseService.card.findMany({
       where: { companyId },
       include: {

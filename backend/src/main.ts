@@ -5,20 +5,20 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://localhost:5174',
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   });
 
   app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Card Management API')
+    .setDescription('The Card Management API description')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('card')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('api/docs', app, documentFactory);
 
   await app.listen(process.env.PORT ?? 3000);
 }

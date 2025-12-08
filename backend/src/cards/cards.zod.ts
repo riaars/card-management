@@ -1,7 +1,8 @@
+import { createZodDto } from '@anatine/zod-nestjs';
 import { z } from 'zod';
 
 export const CardIdParamSchema = z.object({
-  id: z.string(),
+  cardId: z.string(),
 });
 
-export type CardIdParamDto = z.infer<typeof CardIdParamSchema>;
+export class CardIdParamDto extends createZodDto(CardIdParamSchema) {}

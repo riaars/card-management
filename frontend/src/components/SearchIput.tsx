@@ -13,7 +13,7 @@ const SearchInput = ({
   value = "",
   placeholder = "Search...",
   onChange,
-  debounce = 300,
+  debounce = 500,
   className = "",
 }: SearchInputProps) => {
   const [internalValue, setInternalValue] = useState(value);
@@ -24,7 +24,7 @@ const SearchInput = ({
     }, debounce);
 
     return () => clearTimeout(delay);
-  }, [internalValue]);
+  }, [internalValue, debounce, onChange]);
 
   const clearSearch = () => {
     setInternalValue("");

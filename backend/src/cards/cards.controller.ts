@@ -1,30 +1,40 @@
 import { Controller, Get, Param, Patch } from '@nestjs/common';
 import { CardsService } from './cards.service';
-import { SkipThrottle } from '@nestjs/throttler';
 import type { CardIdParamDto } from './cards.zod';
-import { CardsQueryPipe } from './card-query.pipe';
+import { CardsParamPipe } from './cards.pipe';
+import { ApiParam } from '@nestjs/swagger';
 
-@SkipThrottle()
-@Controller()
+@Controller('cards')
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
-  @Get('company/:companyId/cards')
-  async listCards(@Param('companyId') companyId: string) {
-    return this.cardsService.findByCompany(companyId);
-  }
-
-  @Patch('cards/:id/activate')
-  async activateCard(
-    @Param(CardsQueryPipe)
+  @Get(':cardId')
+  @ApiParam({ name: 'cardId', type: String })
+  async getCardDetails(
+    @Param(CardsParamPipe)
     param: CardIdParamDto,
   ) {
-    const { id } = param;
-    return this.cardsService.activateCard(id);
+    const { cardId } = param;
+    return this.cardsService.findOne(cardId);
   }
 
-  @Patch('cards/:id/deactivate')
-  async deactivateCard(@Param('id') id: string) {
-    return this.cardsService.deactivateCard(id);
+  @Patch(':cardId/activate')
+  @ApiParam({ name: 'cardId', type: String })
+  async activateCard(
+    @Param(CardsParamPipe)
+    param: CardIdParamDto,
+  ) {
+    const { cardId } = param;
+    return this.cardsService.activateCard(cardId);
+  }
+
+  @Patch(':cardId/deactivate')
+  @ApiParam({ name: 'cardId', type: String })
+  async deactivateCard(
+    @Param(CardsParamPipe)
+    param: CardIdParamDto,
+  ) {
+    const { cardId } = param;
+    return this.cardsService.deactivateCard(cardId);
   }
 }

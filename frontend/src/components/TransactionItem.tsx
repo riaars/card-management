@@ -1,3 +1,5 @@
+import { getCategoryIcon } from "@/utils/categoryIcons";
+
 interface TransactionProps {
   id: string;
   amount: number;
@@ -12,12 +14,13 @@ const TransactionItem = ({
 }: {
   transaction: TransactionProps;
 }) => {
+  const category = transaction.category || "personal";
   return (
     <div className="rounded-3xl px-4 py-3 mb-4">
       <div className="flex items-center">
         <div className="relative mr-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-indigo-500">
-            <span className="text-xl">🧳</span>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center border border-[#012d2f]">
+            <span className="text-xl">{getCategoryIcon(category)}</span>
           </div>
         </div>
 

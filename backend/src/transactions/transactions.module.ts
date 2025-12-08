@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { TransactionsController } from './transactions.controller';
-import { TransactionsQueryPipe } from './transactions-query.pipe';
+import {
+  TransactionsParamPipe,
+  TransactionsQueryPipe,
+} from './transactions.pipe';
 
 @Module({
   controllers: [TransactionsController],
-  providers: [TransactionsService, TransactionsQueryPipe],
+  providers: [
+    TransactionsService,
+    TransactionsQueryPipe,
+    TransactionsParamPipe,
+  ],
 })
 export class TransactionsModule {}

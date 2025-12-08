@@ -5,7 +5,11 @@ import type { Transaction } from '@prisma/client';
 export class TransactionsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
-  async list(companyId: string, page: number, pageSize: number) {
+  async findAllTransactionsByCompany(
+    companyId: string,
+    page: number,
+    pageSize: number,
+  ) {
     const skip = (page - 1) * pageSize;
 
     const [transactions, totalCount] = await Promise.all([
@@ -30,6 +34,30 @@ export class TransactionsService {
       totalCount,
       hasMore: skip + transactions.length < totalCount,
     };
+  }
+
+  async findLatestTransactionsByCompany(
+    companyId: string,
+    limit = 5,
+  ): Promise<Transaction[]> {
+    const company = await this.databaseService.company.findUnique({
+      where: { id: companyId },
+      select: { id: true },
+    });
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
+    const transactions = await this.databaseService.transaction.findMany({
+      where: {
+        card: { companyId },
+      },
+      orderBy: { postedAt: 'desc' },
+      take: limit,
+    });
+
+    return transactions;
   }
 
   async findAllTransactionsByCard(
@@ -86,28 +114,7 @@ export class TransactionsService {
     };
   }
 
-  async latestByCompany(companyId: string, limit = 5): Promise<Transaction[]> {
-    const company = await this.databaseService.company.findUnique({
-      where: { id: companyId },
-      select: { id: true },
-    });
-
-    if (!company) {
-      throw new NotFoundException('Company not found');
-    }
-
-    const transactions = await this.databaseService.transaction.findMany({
-      where: {
-        card: { companyId },
-      },
-      orderBy: { postedAt: 'desc' },
-      take: limit,
-    });
-
-    return transactions;
-  }
-
-  async latestTransactionsByCard(
+  async findLatestTransactionsByCard(
     cardId: string,
     limit = 5,
   ): Promise<Transaction[]> {

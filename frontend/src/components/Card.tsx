@@ -44,8 +44,8 @@ function Card(card: CardProps) {
 
   return (
     <div
-      className={` relative w-[85%] snap-start shrink-0 rounded-2xl p-4 transition-all bg-gradient-to-br text-white rounded-2xl p-5 shadow-xl flex flex-col justify-between
-      ${getCardGradient(card)}
+      className={`relative w-[85%] lg:h-[180px] snap-start shrink-0 rounded-2xl p-5 transition-all text-white flex flex-col justify-between
+      bg-gradient-to-br ${getCardGradient(card)}
       `}
     >
       {card.cardType === "visa" ? <VisaLogo /> : <MasterCardLogo />}
@@ -59,7 +59,7 @@ function Card(card: CardProps) {
       text-[11px] font-semibold
       bg-white/20 backdrop-blur-sm
       border border-white/30
-      hover:bg-white/30 transition
+      hover:bg-white/30 transition cursor-pointer
     "
         >
           Invoice due
@@ -67,7 +67,7 @@ function Card(card: CardProps) {
       )}
       {card.status === "inactive" && (
         <div
-          className="absolute inset-0 bg-black/50 rounded-2xl z-10 flex items-center justify-center
+          className="absolute inset-0 bg-black/60 rounded-2xl z-10 flex items-center justify-center
       "
         >
           <span className="text-white font-semibold text-lg">Inactive</span>

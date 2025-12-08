@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CardsController } from './cards.controller';
-import { CardsQueryPipe } from './card-query.pipe';
+import { CardsParamPipe } from './cards.pipe';
 
 @Module({
   controllers: [CardsController],
-  providers: [CardsService, CardsQueryPipe],
+  providers: [CardsService, CardsParamPipe],
 })
 export class CardsModule {}

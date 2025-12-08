@@ -1,13 +1,18 @@
+import BackButton from "@/components/BackButton";
 import Pagination from "@/components/Pagination";
 import SearchInput from "@/components/SearchIput";
 import TransactionItem from "@/components/TransactionItem";
-import { useGetTransactionsByCardQuery } from "@/service/api/cardApi";
+import {
+  useGetCardDetailsQuery,
+  useGetTransactionsByCardQuery,
+} from "@/service/api/cardApi";
 import type { Transaction } from "@/service/api/type";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 const TransactionsPage = () => {
   const { cardId } = useParams();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [query, setQuery] = useState("");
 
@@ -24,6 +29,15 @@ const TransactionsPage = () => {
     search: query,
   });
 
+  const {
+    data: cardDetails,
+    isLoading: cardDetailsLoading,
+    error: cardDetailsError,
+  } = useGetCardDetailsQuery({ cardId });
+
+  const companyOwner = cardDetails?.company || "";
+  const cardMaskedNumber = cardDetails?.maskedNumber || "";
+
   const transactions = data?.transactions || [];
   const totalCount = data?.totalCount || 0;
   const start = (currentPage - 1) * totalItemsPerPage + 1;
@@ -38,14 +52,21 @@ const TransactionsPage = () => {
     setCurrentPage(1);
   };
 
-  if (transactionsLoading) {
-    return <div className="p-6 text-slate-700">Loading transactions...</div>;
+  const loading = cardDetailsLoading || transactionsLoading;
+  const error = cardDetailsError || transactionsError;
+
+  if (loading) {
+    return (
+      <div className="p-6  w-full lg:w-[450px] flex-col justify-center items-center mx-auto text-slate-700">
+        Loading transactions...
+      </div>
+    );
   }
 
-  if (transactionsError) {
-    if (transactionsError.status === 429) {
+  if (error) {
+    if (transactionsError?.status === 429) {
       return (
-        <div className="p-6 text-amber-700">
+        <div className="p-6  lg:w-[450px] flex-col justify-center items-center mx-auto text-amber-700">
           You’re sending too many requests. Please wait a bit, refresh and try
           again.
         </div>
@@ -65,7 +86,12 @@ const TransactionsPage = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 lg:w-[450px] flex-col justify-center items-center mx-auto">
+      <BackButton />
+      <p className="font-semibold text-xl mb-4">
+        {companyOwner} | {cardMaskedNumber}
+      </p>
+      <p className="font-semibold text-md mb-4"></p>
       <SearchInput
         value={query}
         placeholder="Search transactions..."

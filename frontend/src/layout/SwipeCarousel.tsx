@@ -4,52 +4,66 @@ import {
   useActivateCardMutation,
   useDeactivateCardMutation,
   useGetLatestTransactionsByCardQuery,
+  useGetSpendSummaryByCardQuery,
 } from "@/service/api/cardApi";
 import { skipToken } from "@reduxjs/toolkit/query";
 import Card from "@/components/Card";
 import SpendBudgetBar from "./SpendBudgetBar";
 import type { CardType } from "@/service/api/type";
+import FreezeCardModal from "@/components/modals/FreezeCardModal";
+import UnfreezeCardModal from "@/components/modals/UnfreezeCardModal";
+import ContactSupportModal from "@/components/modals/ContactSupportModal";
 
-interface SpendProps {
-  cardId: string;
-  spentThisMonth: number;
-  remaining: number;
-  currency: string;
-}
+// interface SpendProps {
+//   cardId: string;
+//   spentThisMonth: number;
+//   remaining: number;
+//   currency: string;
+// }
 
 interface SwipeCarouselProps {
   cards: CardType[];
-  spends: SpendProps[];
 }
 
-export default function SwipeCarousel({ cards, spends }: SwipeCarouselProps) {
+export default function SwipeCarousel({ cards }: SwipeCarouselProps) {
   const [activateCard] = useActivateCardMutation();
   const [deactivateCard] = useDeactivateCardMutation();
-
-  const carouselRef = useRef(null);
+  const [openContactSupport, setOpenContactSupport] = useState(false);
+  const [isFreezeOpen, setIsFreezeOpen] = useState(false);
+  const [isUnfreezeOpen, setIsUnfreezeOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const hasCards = Array.isArray(cards) && cards.length > 0;
+  const activeCard = hasCards ? cards[activeIndex] : null;
 
-  const activeCard = cards[activeIndex];
+  const carouselRef = useRef<HTMLDivElement | null>(null);
 
-  const spendForActiveCard = spends.find(
-    (spend) => spend.cardId === activeCard?.id
+  const { data: latestTrx = [] } = useGetLatestTransactionsByCardQuery(
+    activeCard
+      ? {
+          cardId: activeCard.id,
+          limit: 5,
+        }
+      : skipToken
   );
 
-  const { data: latestTrx } = useGetLatestTransactionsByCardQuery({
-    cardId: activeCard.id ?? skipToken,
-    limit: 5,
-  });
-
-  const latestTrxForActiveCard = latestTrx?.filter(
-    (trx) => trx.cardId === activeCard?.id
+  const {
+    data: spendSummary,
+    isLoading: spendLoading,
+    error: spendError,
+  } = useGetSpendSummaryByCardQuery(
+    activeCard ? { cardId: activeCard.id } : skipToken
   );
+
+  const spendForActiveCard = spendSummary;
 
   useEffect(() => {
     const carousel = carouselRef.current;
+    if (!carousel) return;
 
     function handleScroll() {
-      const slideWidth = carousel?.clientWidth + 16;
-      const index = Math.round(carousel?.scrollLeft / slideWidth);
+      if (!carousel) return;
+      const slideWidth = carousel.clientWidth + 16;
+      const index = Math.round(carousel.scrollLeft / slideWidth);
       setActiveIndex(index);
     }
 
@@ -57,8 +71,9 @@ export default function SwipeCarousel({ cards, spends }: SwipeCarouselProps) {
     return () => carousel.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleIndicatorClick = (index) => {
+  const handleIndicatorClick = (index: number) => {
     const carousel = carouselRef.current;
+    if (!carousel) return;
     const slideWidth = carousel.clientWidth + 16;
 
     carousel.scrollTo({
@@ -67,6 +82,18 @@ export default function SwipeCarousel({ cards, spends }: SwipeCarouselProps) {
     });
 
     setActiveIndex(index);
+  };
+
+  const handleFreeze = () => {
+    if (!activeCard?.id) return;
+    deactivateCard({ cardId: activeCard.id });
+    setIsFreezeOpen(false);
+  };
+
+  const handleUnfreeze = () => {
+    if (!activeCard?.id) return;
+    activateCard({ cardId: activeCard?.id });
+    setIsUnfreezeOpen(false);
   };
 
   return (
@@ -97,34 +124,59 @@ export default function SwipeCarousel({ cards, spends }: SwipeCarouselProps) {
       </div>
 
       {activeCard && (
-        <SpendBudgetBar
-          spend={spendForActiveCard?.spentThisMonth || 0}
-          budget={+activeCard.creditLimit || 0}
-          currency={activeCard.currency}
-        />
-      )}
+        <div>
+          <SpendBudgetBar
+            spend={spendForActiveCard?.spentThisMonth || 0}
+            budget={+activeCard.creditLimit || 0}
+            currency={activeCard.currency}
+          />
+          <LatestTransactions latestTrx={latestTrx} />
 
-      {activeCard && (
-        <LatestTransactions latestTrx={latestTrxForActiveCard || []} />
-      )}
+          <div className="w-full flex flex-col md:flex-col lg:flex-col lg:items-center justify-center gap-4 mt-6">
+            {activeCard.status === "inactive" ? (
+              <button
+                className="btn bg-[#012d2f] text-white p-4 rounded-xl full-width font-semibold lg:w-[400px] cursor-pointer"
+                onClick={() => setIsUnfreezeOpen(true)}
+              >
+                Activate Card
+              </button>
+            ) : (
+              <button
+                className="btn border-red-600 text-red-600 p-4 rounded-xl full-width font-semibold cursor-pointer"
+                onClick={() => setIsFreezeOpen(true)}
+              >
+                Freeze Card
+              </button>
+            )}
 
-      <div className="w-full flex flex-col md:flex-row lg:flex-row justify-center gap-4 mt-4">
-        {activeCard.status === "inactive" ? (
-          <button
-            className="btn bg-[#012d2f] text-white p-4 rounded-xl full-width font-semibold lg:w-[400px]"
-            onClick={() => activateCard({ cardId: activeCard.id })}
-          >
-            Activate Card
-          </button>
-        ) : (
-          <button
-            className="btn border-red-600 text-red-600 p-4 rounded-xl full-width font-semibold"
-            onClick={() => deactivateCard({ cardId: activeCard.id })}
-          >
-            Freeze Card
-          </button>
-        )}
-      </div>
+            <button
+              className="btn bg-[#012d2f] text-white p-4 rounded-xl full-width font-semibold lg:w-[400px] cursor-pointer"
+              onClick={() => setOpenContactSupport(true)}
+            >
+              Contact Qred's Support
+            </button>
+          </div>
+
+          <ContactSupportModal
+            open={openContactSupport}
+            onClose={() => setOpenContactSupport(false)}
+          />
+
+          <FreezeCardModal
+            isOpen={isFreezeOpen}
+            onClose={() => setIsFreezeOpen(false)}
+            onConfirm={handleFreeze}
+            last4={activeCard.maskedNumber}
+          />
+
+          <UnfreezeCardModal
+            isOpen={isUnfreezeOpen}
+            onClose={() => setIsUnfreezeOpen(false)}
+            onConfirm={handleUnfreeze}
+            last4={activeCard.maskedNumber}
+          />
+        </div>
+      )}
     </div>
   );
 }
