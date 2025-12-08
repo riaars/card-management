@@ -1,4 +1,4 @@
-# 🌟 Card Management System --- Monorepo
+# 🌟 Card Management System
 
 This repository contains both the **backend API** and **frontend
 dashboard** for the Card Management System.\
@@ -15,7 +15,7 @@ finance dashboards and internal management tools.
 
 Each project includes its own README with deeper documentation.
 
-- 👉 **Backend README:** `backend/README.md`\
+- 👉 **Backend README:** `backend/README.md`
 - 👉 **Frontend README:** `frontend/README.md`
 
 ---

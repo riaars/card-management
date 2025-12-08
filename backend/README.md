@@ -17,34 +17,33 @@ scalability, clarity, and strong type safety.
 
 ### 🧾 **Card Management**
 
-- Retrieve card details\
-- Activate / deactivate cards\
+- Retrieve card details
+- Activate and deactivate cards
 - List cards belonging to a company
 
 ### 💰 **Spending Summaries**
 
-- Monthly spend by company\
-- Monthly spend by individual card\
-- Calculates credit limit, remaining limit & total spent\
-- Handles Prisma `Decimal` gracefully
+- Monthly spend by company
+- Monthly spend by individual card
+- Calculates credit limit, remaining limit & total spent
 
 ### 💳 **Transaction Management**
 
-- Paginated transactions\
-- Search support (`description`, `category`, `data points`)\
+- Paginated transactions
+- Search support (`description`, `category`, `data points`)
 - Fetch latest transactions by card
 
 ### 🏢 **Company Management**
 
-- List companies\
-- Get company details\
+- List companies
+- Get company details
 - Retrieve company's cards
 
 ### 🧪 **Robust Unit Tests**
 
-- Controllers\
-- Services\
-- Prisma mocks\
+- Controllers
+- Services
+- Prisma mocks
 - Validation pipes indirectly through controller tests
 
 ---
@@ -99,11 +98,11 @@ scalability, clarity, and strong type safety.
 
 # ⚙️ Tech Stack
 
-- **NestJS** -- Modular Node.js framework\
-- **Prisma ORM** -- Type-safe database queries\
-- **PostgreSQL** -- Relational database\
-- **Zod Validation** -- Param & query schema validation\
-- **Swagger** -- Auto-generated API docs\
+- **NestJS** -- Modular Node.js framework
+- **Prisma ORM** -- Type-safe database queries
+- **PostgreSQL** -- Relational database
+- **Zod Validation** -- Param & query schema validation
+- **Swagger** -- Auto-generated API docs
 - **Jest** -- Unit testing
 
 ---
