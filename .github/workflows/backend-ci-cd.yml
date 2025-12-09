@@ -1,30 +1,25 @@
-name: Backend CI/CD
+name: Backend - Build & Deploy to ECS
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - "backend/**"
-      - ".github/workflows/backend-ci-cd.yml"
-  pull_request:
-    branches: [ main ]
-    paths:
-      - "backend/**"
-      - ".github/workflows/backend-ci-cd.yml"
+    branches:
+      - main # deploy on pushes to main
 
 jobs:
-  build-test-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: backend
-
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }} 
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+      ECS_CLUSTER: prod-backend-cluster # change if your cluster name differs
+      ECS_SERVICE: prod-backend-service # change if your service name differs
+      IMAGE_TAG: latest # we’ll use :latest
+      DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Use Node.js
@@ -32,41 +27,54 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: "backend/package-lock.json"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate Prisma Client
-        run: npx prisma generate
+      # Optional: run tests (commented out for now)
+      # - name: Run tests
+      #   run: npm run test
 
-      - name: Run tests
-        run: npm test
-
-      - name: Build backend
-        run: npm run build
-
-      - name: Run Prisma migrations (deploy)
+      - name: Run Prisma migrations
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
         run: npx prisma migrate deploy
 
-      - name: Create deployment package
-        run: |
-          zip -r ../backend-deploy.zip . -x "node_modules/*"
+      # Optional: seed DB if you want on each deploy
+      # - name: Seed database
+      #   env:
+      #     DATABASE_URL: ${{ env.DATABASE_URL }}
+      #   run: npx prisma db seed
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Deploy to Elastic Beanstalk
-        uses: einaregilsson/beanstalk-deploy@v22
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: ${{ secrets.EB_APP_NAME }}
-          environment_name: ${{ secrets.EB_ENV_NAME }}
-          region: ${{ secrets.AWS_REGION }}
-          version_label: backend-${{ github.run_number }}
-          deployment_package: backend-deploy.zip
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+
+      - name: Tag Docker image for ECR
+        run: |
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "ECR_IMAGE=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Push image to ECR
+        run: |
+          docker push $ECR_IMAGE
+
+      - name: Force new deployment in ECS
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $ECS_SERVICE \
+            --force-new-deployment \
+            --region $AWS_REGION
