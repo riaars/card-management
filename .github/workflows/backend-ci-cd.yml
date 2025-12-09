@@ -2,8 +2,15 @@ name: Backend - Build & Deploy to ECS
 
 on:
   push:
-    branches:
-      - main # deploy on pushes to main
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci-cd.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci-cd.yml"
 
 jobs:
   build-and-deploy:
