@@ -20,9 +20,9 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
-      ECS_CLUSTER: prod-backend-cluster # change if your cluster name differs
-      ECS_SERVICE: prod-backend-service # change if your service name differs
-      IMAGE_TAG: latest # we’ll use :latest
+      ECS_CLUSTER: prod-backend-cluster
+      ECS_SERVICE: prod-backend-service
+      IMAGE_TAG: latest
       DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
 
     steps:
