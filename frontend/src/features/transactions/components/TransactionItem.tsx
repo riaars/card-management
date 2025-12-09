@@ -1,4 +1,4 @@
-import { getCategoryIcon } from "@/utils/categoryIcons";
+import { getCategoryIcon } from "@/shared/utils/categoryIcons";
 
 interface TransactionProps {
   id: string;

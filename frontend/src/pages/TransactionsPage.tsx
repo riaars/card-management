@@ -1,14 +1,13 @@
-import BackButton from "@/components/BackButton";
-import Pagination from "@/components/Pagination";
-import SearchInput from "@/components/SearchIput";
-import TransactionItem from "@/components/TransactionItem";
-import {
-  useGetCardDetailsQuery,
-  useGetTransactionsByCardQuery,
-} from "@/service/api/cardApi";
-import type { Transaction } from "@/service/api/type";
+import BackButton from "@/shared/components/BackButton";
+import Pagination from "@/shared/components/Pagination";
+import SearchInput from "@/shared/components/SearchIput";
+import TransactionItem from "@/features/transactions/components/TransactionItem";
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { useGetTransactionsByCardQuery } from "@/features/transactions/api/transactionsApi";
+import { useGetCardDetailsQuery } from "@/features/cards/api/cardsApi";
+import type { Transaction } from "@/features/transactions/types/transactions.types";
 
 const TransactionsPage = () => {
   const { cardId } = useParams();

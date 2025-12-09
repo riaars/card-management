@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import {
   MdSchool,
   MdMovie,
@@ -34,7 +35,6 @@ export const categoryIcons: Record<string, JSX.Element> = {
   wellness: <MdSpa />,
 };
 
-// Fallback icon if category is not found
 export const getCategoryIcon = (category: string): JSX.Element => {
   const key = category.toLowerCase();
   return categoryIcons[key] ?? <MdShoppingBag />;

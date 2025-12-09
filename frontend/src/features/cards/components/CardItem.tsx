@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MasterCardLogo from "./MasterCardLogo";
 import VisaLogo from "./VisaLogo";
-import InvoiceModal from "./modals/InvoiceModal";
+import InvoiceModal from "./InvoiceModal";
 
 interface Invoice {
   id: string;
@@ -25,7 +25,7 @@ interface CardProps {
   invoiceStatus?: string | null;
 }
 
-function Card(card: CardProps) {
+function CardItem(card: CardProps) {
   const [showInvoice, setShowInvoice] = useState(false);
   const hasDueInvoice = card.invoiceStatus && card.invoiceStatus === "due";
   const invoice = card.invoices && card.invoices[0];
@@ -100,4 +100,4 @@ function Card(card: CardProps) {
   );
 }
 
-export default Card;
+export default CardItem;

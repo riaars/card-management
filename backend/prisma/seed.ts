@@ -40,7 +40,18 @@ async function main() {
   // ------------------------------------------------------------
   const card1 = await prisma.card.upsert({
     where: { id: 'card-seed-0001' },
-    update: { id: 'card-seed-0001' },
+    update: {
+      id: 'card-seed-0001',
+      companyId: company.id,
+      maskedNumber: '•••• 1234',
+      status: CardStatus.active,
+      imageUrl: null,
+      creditLimit: 50000,
+      currency: 'SEK',
+      cardHolderName: 'Ria Ratnasari',
+      expiry: '12/26',
+      cardType: CardType.mastercard,
+    },
     create: {
       id: 'card-seed-0001',
       companyId: company.id,
@@ -49,7 +60,7 @@ async function main() {
       imageUrl: null,
       creditLimit: 50000,
       currency: 'SEK',
-      cardHolderName: 'John Doe',
+      cardHolderName: 'Ria Ratnasari',
       expiry: '12/26',
       cardType: CardType.mastercard,
     },
@@ -57,7 +68,18 @@ async function main() {
 
   const card2 = await prisma.card.upsert({
     where: { id: 'card-seed-0002' },
-    update: { id: 'card-seed-0002' },
+    update: {
+      id: 'card-seed-0002',
+      companyId: company.id,
+      maskedNumber: '•••• 5678',
+      status: CardStatus.inactive,
+      imageUrl: null,
+      creditLimit: 5000,
+      currency: 'SEK',
+      cardHolderName: 'John Doe',
+      expiry: '12/26',
+      cardType: CardType.visa,
+    },
     create: {
       id: 'card-seed-0002',
       companyId: company.id,
@@ -68,13 +90,24 @@ async function main() {
       currency: 'SEK',
       cardHolderName: 'John Doe',
       expiry: '12/26',
-      cardType: CardType.mastercard,
+      cardType: CardType.visa,
     },
   });
 
   const card3 = await prisma.card.upsert({
     where: { id: 'card-seed-0003' },
-    update: { id: 'card-seed-0003' },
+    update: {
+      id: 'card-seed-0003',
+      companyId: company1.id,
+      maskedNumber: '•••• 1457',
+      status: CardStatus.active,
+      imageUrl: null,
+      creditLimit: 10000,
+      currency: 'SEK',
+      cardHolderName: 'Peter Parker',
+      expiry: '12/26',
+      cardType: CardType.visa,
+    },
     create: {
       id: 'card-seed-0003',
       companyId: company1.id,
@@ -83,7 +116,7 @@ async function main() {
       imageUrl: null,
       creditLimit: 10000,
       currency: 'SEK',
-      cardHolderName: 'John Doe',
+      cardHolderName: 'Peter Parker',
       expiry: '12/26',
       cardType: CardType.visa,
     },
@@ -91,7 +124,18 @@ async function main() {
 
   const card4 = await prisma.card.upsert({
     where: { id: 'card-seed-0004' },
-    update: { id: 'card-seed-0004' },
+    update: {
+      id: 'card-seed-0004',
+      companyId: company1.id,
+      maskedNumber: '•••• 7890',
+      status: CardStatus.inactive,
+      imageUrl: null,
+      creditLimit: 15000,
+      currency: 'SEK',
+      cardHolderName: 'Harry Potter',
+      expiry: '12/26',
+      cardType: CardType.mastercard,
+    },
     create: {
       id: 'card-seed-0004',
       companyId: company1.id,
@@ -100,9 +144,9 @@ async function main() {
       imageUrl: null,
       creditLimit: 15000,
       currency: 'SEK',
-      cardHolderName: 'John Doe',
+      cardHolderName: 'Harry Potter',
       expiry: '12/26',
-      cardType: CardType.visa,
+      cardType: CardType.mastercard,
     },
   });
 
@@ -113,7 +157,14 @@ async function main() {
   // ------------------------------------------------------------
   const invoice1 = await prisma.invoice.upsert({
     where: { id: 'invoice-seed-0001' },
-    update: {},
+    update: {
+      id: 'invoice-seed-0001',
+      cardId: card1.id,
+      status: InvoiceStatus.due,
+      dueDate: new Date('2025-12-20'),
+      amountDue: 5400,
+      currency: 'SEK',
+    },
     create: {
       id: 'invoice-seed-0001',
       cardId: card1.id,
@@ -126,11 +177,18 @@ async function main() {
 
   const invoice2 = await prisma.invoice.upsert({
     where: { id: 'invoice-seed-0002' },
-    update: {},
+    update: {
+      id: 'invoice-seed-0002',
+      cardId: card2.id,
+      status: InvoiceStatus.paid,
+      dueDate: new Date('2025-12-01'),
+      amountDue: 8700,
+      currency: 'SEK',
+    },
     create: {
       id: 'invoice-seed-0002',
       cardId: card2.id,
-      status: InvoiceStatus.overdue,
+      status: InvoiceStatus.paid,
       dueDate: new Date('2025-12-01'),
       amountDue: 8700,
       currency: 'SEK',
@@ -139,11 +197,18 @@ async function main() {
 
   const invoice3 = await prisma.invoice.upsert({
     where: { id: 'invoice-seed-0003' },
-    update: {},
+    update: {
+      id: 'invoice-seed-0003',
+      cardId: card3.id,
+      status: InvoiceStatus.paid,
+      dueDate: new Date('2025-12-01'),
+      amountDue: 8700,
+      currency: 'SEK',
+    },
     create: {
       id: 'invoice-seed-0003',
       cardId: card3.id,
-      status: InvoiceStatus.overdue,
+      status: InvoiceStatus.paid,
       dueDate: new Date('2025-12-01'),
       amountDue: 8700,
       currency: 'SEK',
@@ -152,11 +217,18 @@ async function main() {
 
   const invoice4 = await prisma.invoice.upsert({
     where: { id: 'invoice-seed-0004' },
-    update: {},
+    update: {
+      id: 'invoice-seed-0004',
+      cardId: card4.id,
+      status: InvoiceStatus.due,
+      dueDate: new Date('2025-12-01'),
+      amountDue: 8700,
+      currency: 'SEK',
+    },
     create: {
       id: 'invoice-seed-0004',
       cardId: card4.id,
-      status: InvoiceStatus.overdue,
+      status: InvoiceStatus.due,
       dueDate: new Date('2025-12-01'),
       amountDue: 8700,
       currency: 'SEK',
@@ -585,22 +657,6 @@ async function main() {
   }
 
   console.log('💸 Transactions created for all cards');
-
-  // ------------------------------------------------------------
-  // 5. Support contact
-  // ------------------------------------------------------------
-  await prisma.supportContact.upsert({
-    where: { companyId: company.id },
-    update: {},
-    create: {
-      companyId: company.id,
-      phone: '+46 123 456 789',
-      email: 'support@companyab.com',
-      chatUrl: 'https://support.companyab.com/chat',
-    },
-  });
-
-  console.log('☎ Support contact created');
 
   console.log('🌱 Database seed complete!');
 }

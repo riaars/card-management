@@ -1,6 +1,6 @@
-import type { Transaction } from "@/service/api/type";
 import { Link } from "react-router-dom";
-import TransactionItem from "../components/TransactionItem";
+import TransactionItem from "./TransactionItem";
+import type { Transaction } from "../types/transactions.types";
 
 interface LatestTransactionsProps {
   latestTrx: Transaction[];

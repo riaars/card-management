@@ -21,6 +21,8 @@
     "prisma:init": "prisma init",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "start:migrated": "npm run prisma:migrate:deploy && npm run start:prod",
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
