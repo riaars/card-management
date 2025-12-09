@@ -7,6 +7,7 @@ async function bootstrap() {
   const allowedOrigins = [
     process.env.FRONTEND_URL,
     'http://localhost:5173',
+    'http://d3mvoqjh87t1nu.cloudfront.net', // placeholder temporarily until backend https ok
   ].filter(Boolean);
 
   app.enableCors({
