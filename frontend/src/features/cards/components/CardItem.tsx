@@ -1,6 +1,6 @@
 import { useState } from "react";
-import MasterCardLogo from "../ui/MasterCardLogo";
-import VisaLogo from "../ui/VisaLogo";
+import MasterCardLogo from "./MasterCardLogo";
+import VisaLogo from "./VisaLogo";
 import InvoiceModal from "../ui/InvoiceModal";
 
 interface Invoice {
