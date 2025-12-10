@@ -1,73 +1,136 @@
-# React + TypeScript + Vite
+# 🌐 Card Transactions Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript web application for viewing company card details and their associated transactions.  
+Built for speed, clean UI, and smooth data browsing — deployed automatically to **AWS S3 + CloudFront** using GitHub Actions.
 
-Currently, two official plugins are available:
+Access via: https://d3mvoqjh87t1nu.cloudfront.net/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dashboard & Transactions View**  
+  View card information and paginated transactions, including search and filtering.
 
-## Expanding the ESLint configuration
+- **Search with Debounce**  
+  Fast, efficient filtering of transactions as the user types.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Responsive UI + Mobile Menu**  
+  Sticky navbar with a mobile-friendly dropdown menu.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Real-time Data Fetching** (RTK Query)  
+  Loading states, error handling (including rate-limit 429), and caching built-in.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **404 – Not Found Page**  
+  Friendly fallback screen for invalid routes.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **E2E Tests with Cypress**  
+  Includes tests for the homepage, transaction page, and not-found route.
+
+- **Automated Deployment to S3 + CloudFront**  
+  GitHub Actions workflow builds and deploys the app automatically on push.
+
+---
+
+## 🛠 Tech Stack
+
+**Frontend**
+
+- React (TypeScript)
+- Vite
+- Tailwind CSS
+- React Router
+- Redux Toolkit Query (RTK Query)
+- React Compiler
+- ESLint
+
+**Testing**
+
+- Cypress (E2E)
+
+**Deployment**
+
+- AWS S3
+- AWS CloudFront
+- GitHub Actions (CI/CD)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Install dependencies
+
+```
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Run development server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+npm run dev
+```
+
+Visit: http://localhost:5173
+
+### 3. Build for production
+
+```
+npm run build
+```
+
+### 4. Preview production build
+
+```
+npm run preview
+```
+
+---
+
+## 🧪 Running E2E Tests (Cypress)
+
+Open Cypress UI:
+
+```
+npm run test:e2e:open
+```
+
+Run tests headless:
+
+```
+npm run test:e2e
+```
+
+---
+
+## ☁️ Deployment (S3 + CloudFront)
+
+This project is deployed automatically using **GitHub Actions**:
+
+- Builds the Vite project
+- Uploads the `dist/` folder to S3
+- Invalidates CloudFront cache for updated assets
+
+---
+
+## 📁 Project Structure (Short Overview)
+
+```
+src/
+  app/
+  assets/
+  features/
+    transactions/
+    cards/
+    spends/
+    companies/
+  shared/
+    components/
+    utils/
+  pages/
+  layout/
+  routes/
+```
+
+# 📄 License
+
+MIT

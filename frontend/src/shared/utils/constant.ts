@@ -1,1 +1,1 @@
-export const TOTAL_ITEMS_PER_PAGE = 20;
+export const TOTAL_ITEMS_PER_PAGE = 10;

@@ -1,6 +1,6 @@
 import { MdArrowBack } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import * as PATH from "@/config/Path";
+import * as PATH from "@/routes/Path";
 
 const BackButton = ({ label = "Back" }: { label?: string }) => {
   const navigate = useNavigate();

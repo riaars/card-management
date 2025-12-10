@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import * as PATH from "./config/Path";
+import * as PATH from "./routes/Path";
 import NotFoundPage from "./pages/NotFoundPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import TransactionsPage from "./pages/TransactionsPage";

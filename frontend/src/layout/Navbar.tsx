@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import CompanyLogo from "../assets/logo.png";
-import * as PATH from "@/config/Path";
+import * as PATH from "@/routes/Path";
 import { useState } from "react";
 
 const Navbar = () => {
