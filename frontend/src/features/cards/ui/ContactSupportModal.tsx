@@ -11,7 +11,7 @@ export default function ContactSupportModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-[90%] max-w-sm bg-white text-slate-600 rounded-2xl p-6 shadow-2xl border border-slate-800">
+      <div className="w-[90%] max-w-sm bg-white text-slate-600 rounded-2xl p-4 shadow-2xl border border-slate-800">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Contact Support</h2>
           <button
@@ -24,7 +24,7 @@ export default function ContactSupportModal({
 
         <div className="space-y-2 text-sm mb-6 px-3">
           <div className="flex justify-between items-center p-2  bg-white-800 rounded-xl">
-            <span className="text-slate-400">Phone</span>
+            <span className="text-slate-600">Phone</span>
             <a
               href="tel:+46812345678"
               className="font-semibold text-slate-600 hover:text-slate-600"
@@ -34,7 +34,7 @@ export default function ContactSupportModal({
           </div>
 
           <div className="flex justify-between items-center p-2 bg-white-800 rounded-xl">
-            <span className="text-slate-400">Email</span>
+            <span className="text-slate-600">Email</span>
             <a
               href="mailto:support@yourcompany.com"
               className="font-semibold text-slate-600 hover:text-slate-600"
@@ -52,7 +52,7 @@ export default function ContactSupportModal({
                        bg-slate-900 text-white hover:bg-slate-800 
                        transition shadow-sm"
           >
-            OK
+            Close
           </button>
         </div>
       </div>

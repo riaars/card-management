@@ -1,46 +1,52 @@
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query";
+
+import TransactionItem from "@/features/transactions/components/TransactionItem";
+import { useGetTransactionsByCardQuery } from "@/features/transactions/api/transactionsApi";
+import type { Transaction } from "@/features/transactions/types/transactions.types";
+
+import { useGetCardDetailsQuery } from "@/features/cards/api/cardsApi";
 import BackButton from "@/shared/components/BackButton";
 import Pagination from "@/shared/components/Pagination";
 import SearchInput from "@/shared/components/SearchIput";
-import TransactionItem from "@/features/transactions/components/TransactionItem";
-
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useGetTransactionsByCardQuery } from "@/features/transactions/api/transactionsApi";
-import { useGetCardDetailsQuery } from "@/features/cards/api/cardsApi";
-import type { Transaction } from "@/features/transactions/types/transactions.types";
+import { TOTAL_ITEMS_PER_PAGE } from "@/shared/utils/constant";
 
 const TransactionsPage = () => {
   const { cardId } = useParams();
-
   const [currentPage, setCurrentPage] = useState(1);
   const [query, setQuery] = useState("");
 
-  const totalItemsPerPage = 10;
+  const trxQueryArgs = cardId
+    ? {
+        cardId,
+        page: currentPage,
+        pageSize: TOTAL_ITEMS_PER_PAGE,
+        search: query,
+      }
+    : skipToken;
 
   const {
-    data,
+    data: transactionsData,
     isLoading: transactionsLoading,
     error: transactionsError,
-  } = useGetTransactionsByCardQuery({
-    cardId,
-    page: currentPage,
-    pageSize: totalItemsPerPage,
-    search: query,
-  });
+  } = useGetTransactionsByCardQuery(trxQueryArgs);
+
+  const cardDetailsArg = cardId ? { cardId } : skipToken;
 
   const {
     data: cardDetails,
     isLoading: cardDetailsLoading,
     error: cardDetailsError,
-  } = useGetCardDetailsQuery({ cardId });
+  } = useGetCardDetailsQuery(cardDetailsArg);
 
   const companyOwner = cardDetails?.company || "";
   const cardMaskedNumber = cardDetails?.maskedNumber || "";
 
-  const transactions = data?.transactions || [];
-  const totalCount = data?.totalCount || 0;
-  const start = (currentPage - 1) * totalItemsPerPage + 1;
-  const end = Math.min(currentPage * totalItemsPerPage, totalCount);
+  const transactions = transactionsData?.transactions || [];
+  const totalCount = transactionsData?.totalCount || 0;
+  const start = (currentPage - 1) * TOTAL_ITEMS_PER_PAGE + 1;
+  const end = Math.min(currentPage * TOTAL_ITEMS_PER_PAGE, totalCount);
 
   const handlePageChange = (selectedPage: number) => {
     setCurrentPage(selectedPage);
@@ -63,7 +69,11 @@ const TransactionsPage = () => {
   }
 
   if (error) {
-    if (transactionsError?.status === 429) {
+    if (
+      transactionsError &&
+      "status" in transactionsError &&
+      transactionsError.status === 429
+    ) {
       return (
         <div className="p-6  lg:w-[450px] flex-col justify-center items-center mx-auto text-amber-700">
           You’re sending too many requests. Please wait a bit, refresh and try
@@ -90,13 +100,14 @@ const TransactionsPage = () => {
       <p className="font-semibold text-xl mb-4">
         {companyOwner} | {cardMaskedNumber}
       </p>
-      <p className="font-semibold text-md mb-4"></p>
+
       <SearchInput
         value={query}
         placeholder="Search transactions..."
         onChange={handleSearch}
         debounce={500}
       />
+
       <div className="space-y-4">
         <p className="text-sm text-gray-600 mt-2 text-end">
           {getTransactionSummaryCount()}
@@ -106,14 +117,14 @@ const TransactionsPage = () => {
         ))}
 
         {!transactionsLoading && transactions.length === 0 && (
-          <div className="text-gray-500">No transactions found.</div>
+          <div className="text-gray-500 text-left">No transactions found.</div>
         )}
       </div>
 
-      {totalCount > totalItemsPerPage && (
+      {totalCount > TOTAL_ITEMS_PER_PAGE && (
         <Pagination
           currentPage={currentPage}
-          totalItemsPerPage={totalItemsPerPage}
+          totalItemsPerPage={TOTAL_ITEMS_PER_PAGE}
           totalItems={totalCount}
           handleChange={handlePageChange}
         />

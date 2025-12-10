@@ -12,3 +12,9 @@ export interface CardType {
   isActive?: boolean;
   cardType?: string;
 }
+
+export interface CardDetails {
+  id: string;
+  company: string;
+  maskedNumber: string;
+}

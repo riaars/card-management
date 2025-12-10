@@ -1,4 +1,4 @@
-export type Transaction = {
+export interface Transaction {
   id: string;
   cardId: string;
   description: string;
@@ -8,4 +8,9 @@ export type Transaction = {
   category: string | null;
   dataPointsSummary: string | null;
   createdAt: string;
-};
+}
+
+export interface Transactions {
+  transactions: Transaction[];
+  totalCount?: number;
+}

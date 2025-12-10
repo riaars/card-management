@@ -1,12 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
 import { Provider } from "react-redux";
 import { store } from "./app/store.ts";
-import Navbar from "./layout/Navbar.tsx";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./shared/components/ErrorFallback.tsx";
+import App from "./App.tsx";
+import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -15,10 +14,7 @@ createRoot(document.getElementById("root")!).render(
       onReset={() => window.location.reload()}
     >
       <Provider store={store}>
-        <>
-          <Navbar />
-          <App />
-        </>
+        <App />
       </Provider>
     </ErrorBoundary>
   </StrictMode>

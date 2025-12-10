@@ -1,19 +1,18 @@
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useState } from "react";
+
 import {
   useActivateCardMutation,
   useDeactivateCardMutation,
 } from "@/features/cards/api/cardsApi";
-import ContactSupportModal from "@/features/cards/components/ContactSupportModal";
+import { useGetLatestTransactionsByCardQuery } from "@/features/transactions/api/transactionsApi";
+import { useGetSpendSummaryByCardQuery } from "@/features/spends/api/spendsApi";
+import ContactSupportModal from "@/features/cards/ui/ContactSupportModal";
 import FreezeCardModal from "./FreezeCardModal";
 import UnfreezeCardModal from "./UnfreezeCardModal";
 import SpendBudgetBar from "@/features/spends/components/SpendBudgetBar";
 import LatestTransactions from "@/features/transactions/components/LatestTransactions";
-
-import { skipToken } from "@reduxjs/toolkit/query";
-import { useState } from "react";
-
 import type { CardType } from "@/features/cards/types/cards.types";
-import { useGetLatestTransactionsByCardQuery } from "@/features/transactions/api/transactionsApi";
-import { useGetSpendSummaryByCardQuery } from "@/features/spends/api/spendsApi";
 import { AsyncBlock } from "@/shared/components/AsyncBlock";
 
 interface CardDetailsPanelProps {
@@ -29,12 +28,13 @@ export function CardDetailsPanel({ card }: CardDetailsPanelProps) {
   const [unfreezeOpen, setUnfreezeOpen] = useState(false);
 
   const {
-    data: latestTrx = [],
+    data: latestTransactionsData,
     isLoading: latestTransactionLoading,
     error: latestTransactionError,
   } = useGetLatestTransactionsByCardQuery(
     card ? { cardId: card.id, limit: 5 } : skipToken
   );
+  const latestTransactions = latestTransactionsData || [];
 
   const {
     data: spend,
@@ -73,19 +73,19 @@ export function CardDetailsPanel({ card }: CardDetailsPanelProps) {
         loadingText="Loading latest transactions..."
         errorText="Failed to load latest transactions..."
       >
-        <LatestTransactions latestTrx={latestTrx} />
+        <LatestTransactions transactions={latestTransactions} />
       </AsyncBlock>
       <div className="w-full flex flex-col lg:items-center justify-center gap-4 mt-6">
         {card.status === "inactive" ? (
           <button
-            className="btn bg-[#012d2f] text-white p-4 rounded-xl lg:w-[400px]"
+            className="btn bg-[#012d2f] text-white p-4 rounded-xl lg:w-[400px] cursor-pointer"
             onClick={() => setUnfreezeOpen(true)}
           >
             Activate Card
           </button>
         ) : (
           <button
-            className="btn border-red-600 text-red-600 p-4 rounded-xl lg:w-[400px]"
+            className="btn border-red-600 text-red-600 p-4 rounded-xl lg:w-[400px] cursor-pointer"
             onClick={() => setFreezeOpen(true)}
           >
             Freeze Card
@@ -93,7 +93,7 @@ export function CardDetailsPanel({ card }: CardDetailsPanelProps) {
         )}
 
         <button
-          className="btn bg-[#012d2f] text-white p-4 rounded-xl lg:w-[400px]"
+          className="btn bg-[#012d2f] text-white p-4 rounded-xl lg:w-[400px] cursor-pointer"
           onClick={() => setOpenContact(true)}
         >
           Contact Support

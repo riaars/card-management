@@ -1,5 +1,5 @@
 import React from "react";
-import CardItem from "./CardItem";
+import CardItem from "../components/CardItem";
 import { useSwipeCarousel } from "../hooks/useSwipeCarousel";
 import type { CardType } from "@/features/cards/types/cards.types";
 

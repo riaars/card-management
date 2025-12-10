@@ -8,14 +8,14 @@ export const spendsApi = baseApi.injectEndpoints({
       { companyId: string }
     >({
       query: ({ companyId }) => `/companies/${companyId}/spends`,
-      providesTags: (result, error, { companyId }) => [
+      providesTags: (_result, _error, { companyId }) => [
         { type: "Spend", id: `company-${companyId}` },
       ],
     }),
 
     getSpendSummaryByCard: builder.query<SpendSummaryItem, { cardId: string }>({
       query: ({ cardId }) => `/cards/${cardId}/spends`,
-      providesTags: (result, error, { cardId }) => [
+      providesTags: (_result, _error, { cardId }) => [
         { type: "Spend", id: `card-${cardId}` },
       ],
     }),

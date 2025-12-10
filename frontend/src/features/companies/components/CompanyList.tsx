@@ -23,13 +23,13 @@ const CompanyList = ({
       border border-slate-200
       text-slate-700
       focus:outline-none
-      focus:ring-2 focus:ring-[#012d2f]-500 focus:border-[#012d2f]-500"
+      focus:ring-2 focus:ring-[#012d2f]-500 focus:border-[#012d2f]-500 cursor-pointer"
       >
         {companies?.map((company) => (
           <option
             key={company.id}
             value={company.id}
-            className="w-full lg:w-[450px]"
+            className="w-full lg:w-[450px] cursor-pointer"
           >
             {company.name}
           </option>

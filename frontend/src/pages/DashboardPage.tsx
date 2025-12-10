@@ -1,11 +1,10 @@
 import React from "react";
-
-import SwipeCarousel from "@/features/cards/components/SwipeCarousel";
 import { skipToken } from "@reduxjs/toolkit/query";
+import SwipeCarousel from "@/features/cards/ui/SwipeCarousel";
 import { useGetCompaniesQuery } from "@/features/companies/api/companiesApi";
 import { useGetCardsByCompanyQuery } from "@/features/cards/api/cardsApi";
-import { AsyncBlock } from "@/shared/components/AsyncBlock";
 import CompanyList from "@/features/companies/components/CompanyList";
+import { AsyncBlock } from "@/shared/components/AsyncBlock";
 
 export const DashboardPage = () => {
   const {

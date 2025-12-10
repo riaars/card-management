@@ -49,7 +49,7 @@ const Pagination = ({
         <button
           key={index}
           onClick={() => handleChange(item as number)}
-          className={`min-w-[36px] h-9 flex items-center justify-center rounded-md border text-sm font-medium transition
+          className={`min-w-[36px] h-9 flex items-center justify-center rounded-md border text-sm font-medium transition cursor-pointer
             ${
               currentPage === item
                 ? "bg-[#012d2f] text-white border-[#012d2f]-600"
@@ -74,11 +74,11 @@ const Pagination = ({
       <button
         disabled={disabledLeft}
         onClick={() => !disabledLeft && handleChange(currentPage - 1)}
-        className={`w-9 h-9 flex items-center justify-center rounded-md border transition
+        className={`w-9 h-9 flex items-center justify-center rounded-md border transition 
           ${
             disabledLeft
               ? "border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50"
-              : "border-gray-300 text-gray-600 hover:bg-gray-100"
+              : "border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
           }
         `}
       >
@@ -89,11 +89,11 @@ const Pagination = ({
       <button
         disabled={disabledRight}
         onClick={() => !disabledRight && handleChange(currentPage + 1)}
-        className={`w-9 h-9 flex items-center justify-center rounded-md border transition
+        className={`w-9 h-9 flex items-center justify-center rounded-md border transition 
           ${
             disabledRight
               ? "border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50"
-              : "border-gray-300 text-gray-600 hover:bg-gray-100"
+              : "border-gray-300 text-gray-600 hover:bg-gray-100 cursor-pointer"
           }
         `}
       >

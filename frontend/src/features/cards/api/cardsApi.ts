@@ -1,5 +1,5 @@
 import { baseApi } from "@/app/api";
-import type { CardType } from "../types/cards.types";
+import type { CardDetails, CardType } from "../types/cards.types";
 
 export const cardsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,9 +18,9 @@ export const cardsApi = baseApi.injectEndpoints({
       },
     }),
 
-    getCardDetails: builder.query<CardType, { cardId: string }>({
+    getCardDetails: builder.query<CardDetails, { cardId: string }>({
       query: ({ cardId }) => `/cards/${cardId}`,
-      providesTags: (result, error, { cardId }) =>
+      providesTags: (result, _error, { cardId }) =>
         result ? [{ type: "Card" as const, id: cardId }] : [],
     }),
 

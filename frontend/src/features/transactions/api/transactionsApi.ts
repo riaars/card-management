@@ -1,5 +1,5 @@
 import { baseApi } from "@/app/api";
-import type { Transaction } from "../types/transactions.types";
+import type { Transaction, Transactions } from "../types/transactions.types";
 
 export interface GetTransactionsByCardArgs {
   cardId: string;
@@ -16,7 +16,7 @@ export const transactionsApi = baseApi.injectEndpoints({
     >({
       query: ({ cardId, limit = 5 }) =>
         `/cards/${cardId}/transactions/latest?limit=${limit}`,
-      providesTags: (result, error, { cardId }) =>
+      providesTags: (result, _error, { cardId }) =>
         result
           ? [
               ...result.map((tx) => ({
@@ -29,7 +29,7 @@ export const transactionsApi = baseApi.injectEndpoints({
     }),
 
     getTransactionsByCard: builder.query<
-      Transaction[],
+      Transactions,
       GetTransactionsByCardArgs
     >({
       query: ({ cardId, page, pageSize, search }) =>
