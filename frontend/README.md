@@ -1,4 +1,14 @@
-# 🌐 Card Transactions Frontend
+# 🌐 Card Management - Frontend
+
+[![React](https://img.shields.io/badge/React-18+-61DAFB?logo=react&logoColor=white&style=flat-square)]()
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?logo=typescript&logoColor=white&style=flat-square)]()
+[![Vite](https://img.shields.io/badge/Vite-Bundler-646CFF?logo=vite&logoColor=white&style=flat-square)]()
+[![Redux Toolkit Query](https://img.shields.io/badge/RTK_Query-Data_Fetching-764abc?logo=redux&logoColor=white&style=flat-square)]()
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3+-38B2AC?logo=tailwindcss&logoColor=white&style=flat-square)]()
+[![Cypress](https://img.shields.io/badge/Cypress-E2E_Testing-17202C?logo=cypress&logoColor=white&style=flat-square)]()
+[![AWS S3](https://img.shields.io/badge/AWS-S3_Deployment-FF9900?logo=amazonaws&logoColor=white&style=flat-square)]()
+[![CloudFront](https://img.shields.io/badge/AWS-CloudFront-CD1848?logo=amazonaws&logoColor=white&style=flat-square)]()
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI/CD-2088FF?logo=githubactions&logoColor=white&style=flat-square)]()
 
 A React + TypeScript web application for viewing company card details and their associated transactions.  
 Built for speed, clean UI, and smooth data browsing — deployed automatically to **AWS S3 + CloudFront** using GitHub Actions.

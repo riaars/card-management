@@ -4,11 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    'http://localhost:5173',
-    'http://d3mvoqjh87t1nu.cloudfront.net', // placeholder temporarily until backend https ok
-  ].filter(Boolean);
+  const allowedOrigins =
+    process.env.FRONTEND_URL?.split(',').map((x) => x.trim()) ?? [];
 
   app.enableCors({
     origin: allowedOrigins,
@@ -26,7 +23,7 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 
 bootstrap();

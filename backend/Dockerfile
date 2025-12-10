@@ -6,7 +6,7 @@ RUN npm ci
 
 COPY . .
 
-# ✅ Set a dummy DATABASE_URL so `prisma generate` not complained
+# Set a dummy DATABASE_URL so `prisma generate` not complained
 ENV DATABASE_URL="postgresql://user:password@localhost:5432/db"
 
 RUN npx prisma generate
